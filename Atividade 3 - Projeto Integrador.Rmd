@@ -1,0 +1,123 @@
+---
+title: "Atividade 3 - Projeto Integrador"
+author: "Larissa Fernandes"
+date: "18 de Abril de 2018"
+output: html_document
+---
+
+```{r}
+  
+install.packages("readr")
+install.packages("descr")
+install.packages("dplyr")
+library(readr)
+library(descr)
+library(dplyr)
+
+```
+#1)Mostre com um comando e usando um gráfico a distribuicao das idades dessa amostra de alunos que #fizeram ENADE em 2014.
+#Comente o resultado.
+```{r}
+hist(enade14$nu_idade, col="blue", main = "Histograma -  idades dos candidatos do Enade")
+```
+## candidatos entre 20 até 25 anos são os que mais fazem Enade
+## quanto mais velhos são os candidatos menor é a quantidade de participantes do Enade.
+
+#2)Monte uma tabela exibindo as porcentagens e os valores absolutos das proporções de alunos por # #COR/RAÇA. O que descobrimos sobre isso?
+```{r}
+enade14$cor_raca <- enade14$qe_i2 
+
+enade14$cor_raca[enade14$cor_raca == "a"] <- "Branco" 
+enade14$cor_raca[enade14$cor_raca == "b"] <- "Negro" 
+enade14$cor_raca[enade14$cor_raca == "c"] <- "Pardo" 
+enade14$cor_raca[enade14$cor_raca == "d"] <- "Amarelo" 
+enade14$cor_raca[enade14$cor_raca == "e"] <- "Indigena"
+
+freq(enade14$cor_raca, plot=F)
+
+```
+# O menor número de alunos do enade é de cor/raça: Indigena e o maior é de cor/raça: Branco.
+
+#3.Apresente a proporção de alunos casados e solteiros. Atenção, queremos apenas CASADOS e #SOLTEIROS.
+# Exclua de sua análise os alunos que tiverem outro tipo de estado civil.
+```{r}
+enade14$est_civil1 <- enade14$qe_i1
+
+library(descr)
+
+enade14$est_civil1[enade14$est_civil1 == "a"]   <- "Solteiros"
+enade14$est_civil1[enade14$est_civil1 == "b"]   <- "Casados"
+enade14$est_civil1[enade14$est_civil1 == "c"]   <- NA 
+enade14$est_civil1[enade14$est_civil1 == "d"]   <- NA 
+enade14$est_civil1[enade14$est_civil1 == "e"]   <- NA 
+
+freq(enade14$est_civil1, plot=F) 
+
+```
+#4) Apresente estatísticas descritivas sobre a nota geral dos alunos no Enade. Apresente também a informação em um gráfico. Qual é o gráfico mais adequado para a visualização desta variável? Por quê? Comente sobre a nota geral. Os alunos parecem ter, no geral, um bom desempenho ou um mal desempenho?
+```{r}
+enade14$nota_geral <- enade14$nt_ger
+
+summary(enade14$nota_geral)
+
+library(descr)
+
+hist(enade14$nt_ger, col = "green", main = "Histograma da Nota geral dos alunos no Enade", xlab="Notas", ylab="Densidade",col.main="darkgray")
+```
+#Histograma - Fornece melhor entendimento dos resultados da nota geral com a dimensão de alunos.
+#Em geral os alunos têm o desempenho fraco, poucos alunos que tiraram notas acima de 600.
+
+#5)Crie uma variável binária chamada PUBLICA. Nessa variável, você deve marcar 1 se a universidade em que o aluno estudou foi pública e 0 se foi privada. ATENÇÃO: existe uma variável com a categoria administrativa da IES mas ela possui várias subclassificações. É preciso que você crie outra variável com as categorias corretas.
+
+```{r}
+enade14$PUBLICA <- enade14$co_catad
+
+enade14$PUBLICA[enade14$PUBLICA  == 93]     =1 
+enade14$PUBLICA[enade14$PUBLICA  == 116]    =1
+enade14$PUBLICA[enade14$PUBLICA  == 118]    =0
+enade14$PUBLICA[enade14$PUBLICA  == 121]    =0
+enade14$PUBLICA[enade14$PUBLICA  == 10001]  =1
+enade14$PUBLICA[enade14$PUBLICA  == 10002]  =1
+enade14$PUBLICA[enade14$PUBLICA  == 10003]  =1
+enade14$PUBLICA[enade14$PUBLICA  == 10004]  =0
+enade14$PUBLICA[enade14$PUBLICA  == 10005]  =0
+enade14$PUBLICA[enade14$PUBLICA  == 10006]  =0
+enade14$PUBLICA[enade14$PUBLICA  == 10007]  =0
+enade14$PUBLICA[enade14$PUBLICA  == 10008]  =0
+enade14$PUBLICA[enade14$PUBLICA  == 10009]  =0
+
+enade14$PUBLICA <- as.factor(enade14$PUBLICA)
+#levels(enade14$PUBLICA) <- c("Privada","Pública")
+
+freq(enade14$PUBLICA, plot = F)
+```
+#6)Mostre a distribuição da renda para os alunos do ENADE 2014. Mostre também a distribuição de renda apenas para os alunos das escolas públicas e das escolas privadas.
+```{r}
+enade14$distri_renda <- enade14$qe_i8
+
+enade14$distri_renda[enade14$distri_renda == "a"] = "a: até R$ 1.086,01"
+enade14$distri_renda[enade14$distri_renda == "b"] = "b: R$ 1.086,01 a R$ 2.172,00"
+enade14$distri_renda[enade14$distri_renda == "c"] = "c: R$ 2.172,01 a 3.258,00"
+enade14$distri_renda[enade14$distri_renda == "d"] = "d: R$3.258,01 a R$ 4.344,00"
+enade14$distri_renda[enade14$distri_renda == "e"] = "e: R$ 4.344,01 a R$ 7.240,00)"
+enade14$distri_renda[enade14$distri_renda == "f"] = "f: R$  7.240,01 a R$ 21.729,00"
+enade14$distri_renda[enade14$distri_renda == "g"] = "g: mais de R$ 21.720,01"
+
+freq(enade14$distri_renda, plot = F) # Distribuição renda geral
+
+freq(enade14[enade14$PUBLICA == 1,]$distri_renda, plot = F) # Distribuição renda Pública
+
+freq(enade14[enade14$PUBLICA == 0,]$distri_renda, plot = F) #Distribuição renda Privada
+
+```
+#7)Mostre agora a nota geral dos alunos das faculdades públicas e dos alunos das faculdades #privadas. O que você acha desses dados?
+```{r}
+print(mean(enade14[enade14$PUBLICA == 1,]$nt_ger, na.rm = T)) # Nota geral das faculdades públicas
+print(mean(enade14[enade14$PUBLICA == 0,]$nt_ger, na.rm = T)) # Nota geral das faculdades privadas
+
+```
+#Reforça que a nota dos alunos de faculdades públicas é 
+#levemente maior que a dos alunos das faculdades privadas.
+
+
+
